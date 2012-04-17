@@ -6,20 +6,23 @@ SRC_ROOT = src
 SRC_DIR = $(SRC_ROOT)/src
 HDR_DIR = $(SRC_ROOT)/header
 
+MAIN_APP_DEPS = $(OBJ_DIR)/util_obj.o
+.SECONDARY: 
 
-$(BIN_DIR)/motor: $(BIN_DIR) $(OBJ_DIR)/util.o $(SRC_DIR)/motor.c $(HDR_DIR)/motor.h
-	gcc -D$(PMKGCC) -lm  -I $(HDR_DIR) $(OBJ_DIR)/util.o $(SRC_DIR)/motor.c $(COMP_OPTS) -o $(BIN_DIR)/motor
+$(OBJ_DIR)/%_obj.o: $(SRC_DIR)/%_obj.c $(HDR_DIR)/%_obj.h 
+	gcc -c -D$(PMKGCC) -I$(HDR_DIR) $< $(COMP_OPTS) -o $@
 
-$(OBJ_DIR)/util.o: $(OBJ_DIR) $(HDR_DIR)/util.h $(SRC_DIR)/util.c 
-	gcc -c -D$(PMKGCC) -I $(HDR_DIR) $(SRC_DIR)/util.c $(COMP_OPTS) -o $(OBJ_DIR)/util.o
+$(BIN_DIR)/%_bin: $(SRC_DIR)/%.c $(HDR_DIR)/%.h $(MAIN_APP_DEPS) 
+	gcc -lm -D$(PMKGCC) -I$(HDR_DIR) $< $(MAIN_APP_DEPS) $(COMP_OPTS) -o $@
+
 
 clean:
-	rm -rf $(BIN_DIR)
+	rm -rf $(BIN_DIR)&& mkdir $(BIN_DIR) && mkdir $(OBJ_DIR)
 
-remake: clean $(BIN_DIR)/motor
+remake: clean $(BIN_DIR)/main_bin
+
+config: $(BIN_DIR)
 
 $(BIN_DIR):
-	mkdir $(BIN_DIR)
+	mkdir $(BIN_DIR) &&  mkdir $(OBJ_DIR)
 
-$(OBJ_DIR): $(BIN_DIR)
-	mkdir $(OBJ_DIR)
