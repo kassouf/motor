@@ -5,7 +5,10 @@
 
 #define IS_NULL(x)(((x) == NULL))
 
-
+#ifndef PMK_MOTOR_UTIL_H
+#error "INCLUDE Directory is messed up... check makefile and command line settings"
+#endif 
+ 
 MOTOR_FUNCTION Convert_abc_to_alfabeta(const double *i_src, double *i_dest){
   if (unlikely(IS_NULL(i_src) || IS_NULL(i_dest))){
     return MOTOR_NULL_VECTOR_ERROR;
